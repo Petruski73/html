@@ -1,0 +1,206 @@
+/* =========================================================
+   FLEXYSCORE - ESTILO "MLB BROADCAST"
+   Basado en la estructura HTML de baseball/xxxx.html de FlexyScore
+   Inspirado en el bug de marcador de las transmisiones de MLB
+   ========================================================= */
+
+/* --- Fuente condensada tipo broadcast deportivo --- */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap');
+
+/* -----------------------------------------------------------
+   1. VARIABLES DE COLOR
+   Cambia estos valores para adaptar los colores a cada equipo.
+   Si quieres colores distintos por partido, lo más práctico es
+   editar estas 4 líneas antes de cada retransmisión.
+----------------------------------------------------------- */
+:root{
+    --home-color: #0f2f66;   /* color panel equipo local (ej. azul LAD) */
+    --away-color: #b3172a;   /* color panel equipo visitante (ej. rojo PHI) */
+    --panel-dark: #16181c;   /* fondo del panel central */
+    --text-light: #ffffff;
+    --accent-yellow: #ffcf29; /* color de la base ocupada */
+    --base-off: #4a4d52;      /* color de la base vacía */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body{
+    background: transparent; /* importante para OBS Browser Source */
+    font-family: 'Oswald', 'Arial Narrow', sans-serif;
+}
+
+/* -----------------------------------------------------------
+   2. CONTENEDOR PRINCIPAL
+   Grid de 3 columnas x 3 filas:
+   equipo local | centro (entrada/turno) | equipo visitante
+   marcador local| centro (span 2 filas)  | marcador visitante
+   fila inferior (bolas-strikes / outs / bases) ocupa todo el ancho
+----------------------------------------------------------- */
+.container.containerbaseball{
+    display: grid;
+    grid-template-columns: 150px 190px 150px;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+        "team1 mid  team2"
+        "pts1  mid  pts2"
+        "foot  foot foot";
+    width: 490px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0,0,0,.45);
+}
+
+/* -----------------------------------------------------------
+   3. PANELES DE EQUIPO (nombre + marcador)
+----------------------------------------------------------- */
+.boxteams{
+    display: flex;
+    align-items: center;
+    padding: 6px 10px 2px;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--text-light);
+    text-transform: uppercase;
+}
+.boxhometeam{ grid-area: team1; background: var(--home-color); }
+.boxawayteam{ grid-area: team2; background: var(--away-color); }
+
+.boxpoints{
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0 10px 8px;
+    font-size: 46px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text-light);
+}
+.boxhomepoints{ grid-area: pts1; background: var(--home-color); }
+.boxawaypoints{ grid-area: pts2; background: var(--away-color); }
+
+/* -----------------------------------------------------------
+   4. PANEL CENTRAL: turno (arriba/abajo) + entrada
+----------------------------------------------------------- */
+.containergamedata{
+    grid-area: mid;
+    background: var(--panel-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 8px 6px;
+}
+
+.boxservice{ display:flex; align-items:center; justify-content:center; width: 22px; }
+
+/* El span homeservice/awayservice normalmente recibe el triángulo ▲/▼
+   desde el JS de FlexyScore para indicar quién batea. Lo estilizamos
+   por si el script inserta texto tipo "▲" "▼" o clases custom. */
+#homeservice, #awayservice{
+    font-size: 16px;
+    color: var(--accent-yellow);
+}
+
+.containerinnings{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+}
+.boxinnings{
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--text-light);
+}
+.boxinningslabel{
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #9aa0a6;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+/* -----------------------------------------------------------
+   5. FILA INFERIOR: logo, bolas-strikes, outs, bases
+----------------------------------------------------------- */
+.containerlastrow{
+    grid-area: foot;
+    background: var(--panel-dark);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    border-top: 2px solid rgba(255,255,255,.08);
+}
+
+.sgrlogo{
+    width: 34px;
+    height: 34px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    /* el JS hace setLogo('archivo.png'); esto solo define tamaño/hueco */
+}
+
+/* --- Bolas / Strikes --- */
+.containerboxstrikes{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-light);
+}
+.boxballsstrikesseparator{ color: #6a6f76; }
+
+/* --- Outs --- */
+.containerouts{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+}
+.boxouts{ font-size: 22px; font-weight: 600; color: var(--text-light); }
+.boxoutslabel{
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: #9aa0a6;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+/* -----------------------------------------------------------
+   6. DIAMANTE DE BASES
+   b1 = primera (abajo-derecha), b2 = segunda (arriba-centro),
+   b3 = tercera (abajo-izquierda). Cada "box" se rota 45º para
+   formar el rombo, igual que en el bug de MLB.
+----------------------------------------------------------- */
+.containerbases{
+    position: relative;
+    width: 42px;
+    height: 34px;
+}
+.boxbases{
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    background: var(--base-off);
+    transform: rotate(45deg);
+    border: 1px solid rgba(255,255,255,.25);
+    transition: background .2s ease;
+}
+#b2{ top: 0;    left: 15px; }              /* segunda base, arriba */
+#b3{ bottom: 0; left: 2px;  }              /* tercera base, abajo-izq */
+#b1{ bottom: 0; right: 2px; }              /* primera base, abajo-der */
+
+/* Estado "ocupada": si tu script cambia la clase a boxbaseon
+   (siguiendo el mismo patrón que boxbaseoff), esto la pinta de
+   amarillo automáticamente. Si en tu JS usa otra clase (p.ej. "on"
+   o "active"), dime el nombre exacto y ajusto el selector. */
+.boxbaseon,
+.boxbases.on,
+.boxbases.active{
+    background: var(--accent-yellow);
+    box-shadow: 0 0 6px var(--accent-yellow);
+}
