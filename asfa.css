@@ -94,13 +94,16 @@ body{
 
 .boxservice{ display:flex; align-items:center; justify-content:center; width: 22px; }
 
-/* El span homeservice/awayservice normalmente recibe el triángulo ▲/▼
-   desde el JS de FlexyScore para indicar quién batea. Lo estilizamos
-   por si el script inserta texto tipo "▲" "▼" o clases custom. */
-#homeservice, #awayservice{
-    font-size: 16px;
-    color: var(--accent-yellow);
-}
+/* CONFIRMADO en el CodePen oficial (Flexyscore/XWjbMVy):
+   el span de turno contiene un <svg> (triangleup/triangledown) y el
+   propio JS alterna la clase del span entre:
+   - "okservice"  -> equipo que está bateando ahora mismo
+   - "noservice"  -> equipo que no batea
+   El color se pinta con "fill" sobre el SVG, no con "color" sobre el span. */
+.boxservice svg{ width: 12px; height: 9px; display:block; }
+
+.okservice svg{ fill: var(--accent-yellow); }
+.noservice svg{ fill: #4a4d52; }
 
 .containerinnings{
     display: flex;
@@ -194,13 +197,11 @@ body{
 #b3{ bottom: 0; left: 2px;  }              /* tercera base, abajo-izq */
 #b1{ bottom: 0; right: 2px; }              /* primera base, abajo-der */
 
-/* Estado "ocupada": si tu script cambia la clase a boxbaseon
-   (siguiendo el mismo patrón que boxbaseoff), esto la pinta de
-   amarillo automáticamente. Si en tu JS usa otra clase (p.ej. "on"
-   o "active"), dime el nombre exacto y ajusto el selector. */
-.boxbaseon,
-.boxbases.on,
-.boxbases.active{
+/* CONFIRMADO en el CodePen oficial: cuando hay corredor embasado,
+   el JS pone class="box boxbases boxon" en vez de "boxbasesoff".
+   Por eso el selector real es .boxon (con especificidad extra por
+   si acaso: .containerbaseball .boxon, igual que hace Flexyscore). */
+.containerbaseball .boxon{
     background: var(--accent-yellow);
     box-shadow: 0 0 6px var(--accent-yellow);
 }
