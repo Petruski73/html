@@ -1,37 +1,28 @@
 /* =========================================================
-   FLEXYSCORE - ESTILO "MLB BROADCAST"
-   Diseñado para convivir con DarkSide.css (cargado antes).
-   Estrategia:
-   1) Reutilizamos las variables CSS que ya usa DarkSide
-      (--signalcolor, --bkgmedium, --bkgimage...) para retintar
-      automáticamente todo lo que las usa, sin pelear regla a regla.
-   2) Para el layout puro (rejilla, tamaños) usamos selectores
-      con la misma especificidad que DarkSide + !important,
-      porque estamos sustituyendo un framework entero, no
-      partiendo de una página en blanco.
+   FLEXYSCORE - ESTILO "MLB WORLD SERIES BUG"
+   Paneles con degradado + panel central blanco + bases metálicas
+   superpuestas abajo (como el bug de FOX/MLB del ejemplo).
+   Convive con DarkSide.css (cargado antes) igual que la versión anterior.
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700;800&display=swap');
 
-/* -----------------------------------------------------------
-   0. VARIABLES
-   Las de arriba son nuestras. Las de abajo SOBRESCRIBEN las
-   que define DarkSide.css en su :root (incluso si no tocamos
-   ni una sola de sus reglas, heredan estos valores nuevos).
------------------------------------------------------------ */
 :root{
-    --home-color: #0f2f66;    /* panel equipo local */
-    --away-color: #b3172a;    /* panel equipo visitante */
-    --panel-dark: #16181c;    /* fondo panel central / inferior */
-    --text-light: #ffffff;
-    --accent-yellow: #ffcf29; /* base ocupada / turno activo */
-    --base-off: #4a4d52;      /* base vacía / turno inactivo */
+    /* --- Degradados de equipo: cambia estos 4 tonos para cada partido --- */
+    --home-grad-1: #4a7fc9;   /* azul claro arriba */
+    --home-grad-2: #0b2652;   /* azul oscuro abajo */
+    --away-grad-1: #d64550;   /* rojo claro arriba */
+    --away-grad-2: #5c0c14;   /* rojo oscuro abajo */
 
-    /* --- variables de DarkSide.css, redefinidas --- */
-    --signalcolor: #ffcf29;   /* antes "red": usado en boxon, service, etc */
-    --signaloff: #4a4d52;     /* antes "#666" */
-    --bkgimage: none;         /* quita el fondo cuadriculado del contenedor */
-    --bkgmedium: rgba(22,24,28,.92); /* fondo de paneles internos */
+    --panel-white: #ffffff;
+    --text-dark: #111111;
+    --text-light: #ffffff;
+
+    /* --- Redefinimos variables de DarkSide.css para que no interfieran --- */
+    --signalcolor: #111111;
+    --signaloff: #9a9a9a;
+    --bkgimage: none;
+    --bkgmedium: transparent;
     --bordercolors: transparent;
     --text: #ffffff;
 }
@@ -41,188 +32,196 @@ body{ background: transparent; font-family: 'Oswald', 'Arial Narrow', sans-serif
 
 /* -----------------------------------------------------------
    1. CONTENEDOR PRINCIPAL
+   490 x 130px. position:relative porque las bases y los datos
+   del panel central se posicionan de forma absoluta encima.
 ----------------------------------------------------------- */
 .container.containerbaseball{
+    position: relative !important;
     display: grid !important;
     grid-template-columns: 150px 190px 150px !important;
-    grid-template-rows: auto auto auto !important;
+    grid-template-rows: 52px 78px !important;
     grid-template-areas:
         "team1 mid  team2"
-        "pts1  mid  pts2"
-        "foot  foot foot" !important;
+        "pts1  mid  pts2" !important;
     column-gap: 0 !important;
+    row-gap: 0 !important;
     width: 490px !important;
-    height: auto !important;
+    height: 130px !important;
     float: none !important;
     padding: 0 !important;
-    margin: 0 !important;
+    margin: 30px auto !important; /* espacio abajo para que quepan las bases */
     border-left: none !important;
     transform: none !important;
-    font-size: 16px !important;   /* clave: anula el 6.5vw de DarkSide del que
-                                      heredan (en em) casi todos los tamaños internos */
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 4px 14px rgba(0,0,0,.45);
+    font-size: 16px !important;
+    box-shadow: 0 6px 16px rgba(0,0,0,.5);
 }
 
 /* -----------------------------------------------------------
-   2. PANELES DE EQUIPO (nombre + marcador)
+   2. PANELES DE EQUIPO (degradado, nombre arriba / número abajo)
 ----------------------------------------------------------- */
 .containerbaseball .boxteams{
     grid-row: auto !important;
-    display: flex !important;
-    align-items: center !important;
-    padding: 6px 10px 2px !important;
-    font-size: 22px !important;
-    font-weight: 600;
+    display:flex !important;
+    align-items:center !important;
+    padding: 0 14px !important;
+    font-size: 30px !important;
+    font-weight: 800;
     letter-spacing: 1px;
     color: var(--text-light) !important;
     text-transform: uppercase;
 }
-.containerbaseball .boxhometeam{ grid-area: team1 !important; background: var(--home-color) !important; }
-.containerbaseball .boxawayteam{ grid-area: team2 !important; background: var(--away-color) !important; }
+.containerbaseball .boxhometeam{
+    grid-area: team1 !important;
+    background: linear-gradient(160deg, var(--home-grad-1), var(--home-grad-2)) !important;
+}
+.containerbaseball .boxawayteam{
+    grid-area: team2 !important;
+    background: linear-gradient(160deg, var(--away-grad-1), var(--away-grad-2)) !important;
+}
 
 .containerbaseball .boxpoints{
-    display: flex !important;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-    padding: 0 10px 8px !important;
-    font-size: 46px !important;
-    font-weight: 700;
+    display:flex !important;
+    align-items:flex-start !important;
+    justify-content:flex-start !important;
+    padding: 0 14px !important;
+    font-size: 54px !important;
+    font-weight: 800;
     line-height: 1;
     color: var(--text-light) !important;
 }
-.containerbaseball .boxhomepoints{ grid-area: pts1 !important; background: var(--home-color) !important; }
-.containerbaseball .boxawaypoints{ grid-area: pts2 !important; background: var(--away-color) !important; }
+.containerbaseball .boxhomepoints{
+    grid-area: pts1 !important;
+    background: linear-gradient(160deg, var(--home-grad-1), var(--home-grad-2)) !important;
+}
+.containerbaseball .boxawaypoints{
+    grid-area: pts2 !important;
+    background: linear-gradient(160deg, var(--away-grad-1), var(--away-grad-2)) !important;
+}
 
 /* -----------------------------------------------------------
-   3. PANEL CENTRAL: turno (arriba/abajo) + entrada
+   3. PANEL CENTRAL BLANCO
+   Solo dibuja el triángulo + entrada en la mitad superior;
+   el conteo de bolas-strikes y los outs se "teletransportan"
+   ahí encima mediante posicionamiento absoluto (ver bloque 4).
 ----------------------------------------------------------- */
 .containerbaseball .containergamedata{
     grid-area: mid !important;
-    grid-column: auto !important;
-    grid-row: auto !important;
+    background: var(--panel-white) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 10px !important;
-    padding: 8px 6px !important;
-    background: var(--panel-dark) !important;
-    border-left: 3px solid rgba(255,255,255,.08) !important;
-}
-
-.containerbaseball .boxservice{
+    gap: 6px !important;
+    padding-top: 0 !important;
     position: relative;
-    display:flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-    width: 22px !important;
-    height: 20px !important;
+    z-index: 1;
 }
-.containerbaseball .boxservice span{ position:absolute; width:100%; height:70%; }
-.containerbaseball .boxhomeservice span{ clip-path: polygon(50% 10%, 25% 100%, 75% 100%); }
-.containerbaseball .boxawayservice span{ clip-path: polygon(50% 90%, 25% 0%, 75% 0%); }
-/* noservice/okservice ya se retiñen solos via --signalcolor / --signaloff */
+/* Solo debe verse un triángulo (el del equipo que batea). El otro
+   se oculta para que no se dupliquen encima. */
+.containerbaseball .boxservice{ position:relative; width:14px; height:12px; }
+.containerbaseball .boxhomeservice,
+.containerbaseball .boxawayservice{ position:absolute; left:63px; top:24px; }
+.containerbaseball .boxservice span{ position:absolute; width:100%; height:100%; }
+.containerbaseball .boxservice span.noservice{ display:none; }
+.containerbaseball .boxservice span.okservice{ background: var(--text-dark); }
+.containerbaseball .boxhomeservice span{ clip-path: polygon(50% 0, 0 100%, 100% 100%); }
+.containerbaseball .boxawayservice span{ clip-path: polygon(50% 100%, 0 0, 100% 0); }
 
 .containerbaseball .containerinnings{
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    line-height: 1;
+    display:flex !important;
+    align-items:center !important;
+    margin-top: 24px;
 }
 .containerbaseball .boxinnings{
-    font-size: 30px !important;
-    font-weight: 700;
-    color: var(--text-light) !important;
+    font-size: 26px !important;
+    font-weight: 800;
+    color: var(--text-dark) !important;
 }
-.containerbaseball .boxinningslabel{
-    font-size: 11px !important;
-    letter-spacing: 2px;
-    color: #9aa0a6 !important;
-    text-transform: uppercase;
-    margin-top: 2px;
-}
+.containerbaseball .boxinningslabel{ display:none; } /* el ejemplo no muestra "Inn" */
 
 /* -----------------------------------------------------------
-   4. FILA INFERIOR: logo, bolas-strikes, outs, bases
+   4. BOLAS-STRIKES Y OUTS "TELETRANSPORTADOS" AL PANEL BLANCO
+   containerlastrow pasa a ser una capa transparente que cubre
+   toda la tarjeta; cada pieza se coloca por coordenadas.
 ----------------------------------------------------------- */
 .containerbaseball .containerlastrow{
     grid-area: foot !important;
     grid-column: 1 / -1 !important;
-    grid-row: 3 / 4 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    padding: 8px 14px !important;
-    background: var(--panel-dark) !important;
-    border-top: 2px solid rgba(255,255,255,.08);
-    font-weight: normal !important;
-    font-size: 16px !important; /* vuelve a fijar la base para sus hijos */
-}
-.containerbaseball .containerlastrow .box{
-    font-size: 22px !important;  /* anula el 1.2em de DarkSide sobre este mismo selector */
+    grid-row: 1 / -1 !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background: none !important;
+    padding: 0 !important;
+    pointer-events: none;
+    z-index: 2;
 }
 
-.containerbaseball .sgrlogo{
-    width: 34px !important;
-    height: 34px !important;
-    background-size: contain !important;
-    background-repeat: no-repeat;
-    background-position: center;
-}
+.containerbaseball .sgrlogo{ display:none !important; } /* ignoramos logos, como pediste */
 
 .containerbaseball .containerboxstrikes{
-    display: flex !important;
-    align-items: center !important;
+    position: absolute !important;
+    top: 24px;
+    left: 250px;
+    display:flex !important;
+    align-items:center !important;
     gap: 4px !important;
-    background: none !important; /* quita el degradado gris de DarkSide */
-    color: var(--text-light) !important;
+    font-size: 26px !important;
+    font-weight: 800;
+    color: var(--text-dark) !important;
 }
-.containerbaseball .boxballsstrikesseparator{ color: #6a6f76 !important; }
+.containerbaseball .boxballsstrikesseparator{ color: var(--text-dark) !important; }
 
 .containerbaseball .containerouts{
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    background: none !important;
-    line-height: 1;
+    position: absolute !important;
+    top: 66px;
+    left: 150px;
+    width: 190px;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap: 6px !important;
 }
-.containerbaseball .boxouts{ color: var(--text-light) !important; margin-right: 0 !important; }
+.containerbaseball .boxouts{
+    font-size: 26px !important;
+    font-weight: 800;
+    color: var(--text-dark) !important;
+    margin-right: 0 !important;
+}
 .containerbaseball .boxoutslabel{
-    font-size: 10px !important;
-    letter-spacing: 1.5px;
-    color: #9aa0a6 !important;
+    font-size: 18px !important;
+    font-weight: 700;
+    color: var(--text-dark) !important;
     text-transform: uppercase;
-    margin-top: 2px;
+    letter-spacing: 1px;
 }
 
 /* -----------------------------------------------------------
-   5. DIAMANTE DE BASES
+   5. BASES METÁLICAS, superpuestas al borde inferior
 ----------------------------------------------------------- */
 .containerbaseball .containerbases{
-    position: relative !important;
-    width: 42px !important;
-    height: 34px !important;
+    position: absolute !important;
+    left: 50%;
+    bottom: -34px;
+    transform: translateX(-50%);
+    width: 90px !important;
+    height: 60px !important;
     background: none !important;
     padding: 0 !important;
 }
 .containerbaseball .boxbases{
     position: absolute !important;
-    width: 13px !important;
-    height: 13px !important;
-    background: var(--base-off) !important;
+    width: 30px !important;
+    height: 30px !important;
     transform: rotate(45deg) !important;
-    border: 1px solid rgba(255,255,255,.25);
-    transition: background .2s ease;
+    background: linear-gradient(135deg, #f4f4f4, #b9b9b9) !important;
+    border: 1px solid rgba(0,0,0,.4);
+    box-shadow: 2px 3px 4px rgba(0,0,0,.5);
 }
-/* Posiciones por ID (máxima especificidad, ignora los nth-child de DarkSide) */
-#b2{ top: 0 !important;    left: 15px !important; bottom:auto !important; }
-#b3{ bottom: 0 !important; left: 2px !important;  top:auto !important; }
-#b1{ bottom: 0 !important; right: 2px !important; left:auto !important; top:auto !important; }
+#b2{ top: 0 !important;    left: 30px !important; bottom:auto !important; }
+#b3{ bottom: 0 !important; left: 4px !important;  top:auto !important; }
+#b1{ bottom: 0 !important; right: 4px !important; left:auto !important; top:auto !important; }
 
-/* Base ocupada: cubrimos boxon (CodePen oficial) y boxbaseson (tu doc) */
+/* Base ocupada: la resaltamos en dorado en vez de gris metálico */
 .containerbaseball .boxon,
 .containerbaseball .boxbaseson{
-    background: var(--accent-yellow) !important;
-    box-shadow: 0 0 6px var(--accent-yellow);
+    background: linear-gradient(135deg, #ffe27a, #d8a520) !important;
 }
